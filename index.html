@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北邮 BUPT - 志愿活动实践</title>
+    <style>
+        /* --- 1. 全局变量与重置 --- */
+        :root {
+            --bupt-blue: #003e7e;      /* 官方深蓝 */
+            --bupt-blue-light: #e6f0fa;
+            --bupt-gold: #c69c6d;      /* 辅助金色 */
+            --text-main: #333;
+            --text-sub: #555;
+            --bg-gray: #f5f7fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            line-height: 1.7;
+            background-color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- 2. 导航栏 --- */
+        header {
+            background: var(--bupt-blue);
+            color: #fff;
+            padding: 0 5%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-logo-img {
+            height: 48px;
+            width: auto;
+            margin-right: 12px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .logo-text { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; line-height: 1;}
+        .logo-text span { color: var(--bupt-gold); font-size: 0.9em; margin-left: 8px; }
+
+        nav ul { display: flex; gap: 20px; } /* 稍微调小间距以容纳更多菜单 */
+        nav a { font-size: 0.95rem; opacity: 0.9; transition: all 0.3s; position: relative; font-weight: 500;}
+        nav a:hover { opacity: 1; color: var(--bupt-gold); }
+        nav a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background: var(--bupt-gold); transition: width 0.3s;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* --- 3. Hero 巨幕 --- */
+        .hero {
+            height: 85vh;
+            background: linear-gradient(135deg, rgba(0, 62, 126, 0.85), rgba(0, 20, 50, 0.9)), 
+                        url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Main_Building_of_BUPT.jpg/1200px-Main_Building_of_BUPT.jpg') center/cover fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            padding: 0 20px;
+        }
+
+        .hero h1 { font-size: 3.8rem; margin-bottom: 20px; text-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.4rem; max-width: 700px; margin-bottom: 40px; color: #ddd; }
+        
+        .cta-btn {
+            padding: 15px 40px;
+            background: var(--bupt-gold);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(198, 156, 109, 0.3);
+            transition: transform 0.3s, background 0.3s;
+        }
+        .cta-btn:hover { transform: translateY(-3px); background: #b08b5e; }
+
+        /* --- 4. 通用版块样式 --- */
+        section { padding: 80px 10%; }
+        /* 背景色交替设置 */
+        #history { background-color: #fff; }
+        #about { background-color: var(--bg-gray); }
+        #career { background-color: #fff; }
+        #facilities { background-color: var(--bg-gray); }
+        #location { background-color: #fff; }
+        #alumni { background-color: var(--bg-gray); }
+        #spirit { background-color: var(--bupt-blue); color: #fff; } /* 精神板块特殊样式 */
+
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-size: 2.4rem; color: var(--bupt-blue); margin-bottom: 15px; }
+        .section-header p { color: var(--text-sub); font-size: 1.1rem; max-width: 800px; margin: 0 auto 15px auto;}
+        .divider { width: 60px; height: 4px; background: var(--bupt-gold); margin: 0 auto; border-radius: 2px; }
+
+        /* 精神板块标题特殊处理 */
+        #spirit .section-header h2 { color: #fff; }
+        #spirit .section-header p { color: #e0e0e0; }
+
+        /* --- NEW: 校史板块样式 --- */
+        .history-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .history-intro {
+            font-size: 1.1rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .timeline-wrapper {
+            position: relative;
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+        .timeline-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 50%;
+            width: 2px;
+            background: var(--bupt-blue-light);
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+        .timeline-content {
+            width: 45%;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--bupt-gold);
+            transition: transform 0.3s;
+        }
+        .timeline-item:nth-child(even) .timeline-content { border-left: none; border-right: 4px solid var(--bupt-gold); text-align: right;}
+        .timeline-content:hover { transform: scale(1.02); }
+        .timeline-year {
+            font-size: 1.5rem; font-weight: bold; color: var(--bupt-blue); margin-bottom: 10px;
+        }
+        .timeline-dot {
+            width: 20px; height: 20px; background: var(--bupt-gold);
+            border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%);
+            border: 4px solid #fff; box-shadow: 0 0 0 2px var(--bupt-blue-light);
+            z-index: 10;
+        }
+
+        /* --- 5. 王牌学科 --- */
+        .major-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .major-card {
+            background: #fff; padding: 30px; border-radius: 12px;
+            border-top: 5px solid var(--bupt-blue);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s;
+            border: 1px solid #eee;
+        }
+        .major-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,62,126,0.1); }
+        .major-card h3 { margin-bottom: 15px; color: var(--bupt-blue); font-size: 1.3rem;}
+        .major-card p { font-size: 0.95rem; color: #666; }
+
+        /* --- 6. 就业优势 --- */
+        .career-layout { display: flex; flex-wrap: wrap; gap: 50px; justify-content: space-between; align-items: center;}
+        .career-text { flex: 1; min-width: 300px; }
+        .career-visuals { flex: 1; min-width: 300px; }
+        .feature-list li { margin-bottom: 20px; padding-left: 30px; position: relative; }
+        .feature-list li::before {
+            content: '✔'; color: var(--bupt-gold); font-weight: bold; font-size: 1.2rem;
+            position: absolute; left: 0; top: 2px;
+        }
+        .feature-list h4 { font-size: 1.2rem; margin-bottom: 5px; color: var(--bupt-blue); }
+        .chart-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .bar-group { margin-bottom: 20px; }
+        .bar-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; font-weight: 600; color: #555;}
+        .bar-bg { background: #edf2f7; height: 14px; border-radius: 7px; overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--bupt-blue), #4a8adb); border-radius: 7px;}
+        .company-tags { margin-top: 35px; display: flex; flex-wrap: wrap; gap: 12px; }
+        .tag {
+            background: #fff; color: var(--bupt-blue); border: 1px solid var(--bupt-blue-light);
+            padding: 8px 18px; border-radius: 25px; font-size: 0.9rem; font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,62,126,0.05);
+        }
+
+        /* --- 7. 硬件设施 --- */
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+            gap: 30px;
+        }
+        .facility-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            border: 1px solid #eee;
+        }
+        .facility-card:hover { transform: translateY(-5px); }
+        
+        .facility-img {
+            width: 100%; height: 200px; object-fit: cover; 
+            border-bottom: 3px solid var(--bupt-gold); background-color: #eee;
+        }
+
+        .facility-info { padding: 20px; }
+        .facility-info h3 { color: var(--bupt-blue); margin-bottom: 8px; font-size: 1.2rem;}
+        .facility-info p { font-size: 0.9rem; color: #666; line-height: 1.6; }
+        
+        /* --- 8. 校区与地理优势 --- */
+        .campus-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .campus-box {
+            background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--bupt-blue);
+        }
+        .campus-box h3 { color: var(--bupt-blue); margin-bottom: 15px; font-size: 1.4rem;}
+        .location-advantage {
+            background: linear-gradient(to right, var(--bupt-blue), #1a5a9e);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .location-advantage h3 { color: var(--bupt-gold); margin-bottom: 15px; font-size: 1.6rem;}
+        .location-advantage p { font-size: 1.1rem; opacity: 0.9; max-width: 800px; margin: 0 auto;}
+
+        /* --- 9. 校友网络 --- */
+        .alumni-layout { display: flex; flex-wrap: wrap; gap: 40px; align-items: center; }
+        .alumni-text { flex: 1; min-width: 300px; }
+        .alumni-image-box { flex: 1.2; min-width: 350px; }
+        .bbs-screenshot {
+            width: 100%; height: auto; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); background-color: #eee;
+        }
+
+        /* --- NEW: 北邮精神板块样式 --- */
+        .spirit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .spirit-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        .spirit-card:hover { background: rgba(255, 255, 255, 0.15); }
+        .spirit-icon { font-size: 3rem; margin-bottom: 20px; color: var(--bupt-gold); }
+        .spirit-card h3 { font-size: 1.5rem; margin-bottom: 15px; color: #fff; font-weight: bold;}
+        .spirit-card p { color: #ddd; font-size: 1rem; line-height: 1.8; }
+        .motto-highlight { font-family: "KaiTi", serif; font-size: 1.8rem; margin: 20px 0; color: var(--bupt-gold); letter-spacing: 2px;}
+
+        /* --- 10. 页脚 --- */
+        footer {
+            background: #1a1a1a; color: #888; text-align: center; padding: 50px 20px;
+        }
+        footer .motto { color: #fff; font-size: 1.5rem; letter-spacing: 5px; margin-bottom: 20px; font-family: "KaiTi", serif; }
+
+        /* --- 响应式 --- */
+        @media screen and (max-width: 768px) {
+            header { padding: 0 20px; }
+            .logo-text { font-size: 1.2rem; }
+            .header-logo-img { height: 35px; margin-right: 8px; }
+            nav ul { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            section { padding: 60px 5%; }
+            .career-layout, .alumni-layout { flex-direction: column; }
+            .campus-layout { grid-template-columns: 1fr; gap: 20px;}
+            
+            /* Timeline Mobile Fix */
+            .timeline-wrapper::before { left: 20px; }
+            .timeline-item { flex-direction: column; align-items: flex-start; margin-left: 20px;}
+            .timeline-item:nth-child(even) { flex-direction: column; align-items: flex-start; }
+            .timeline-content { width: 100%; margin-left: 20px; border-left: 4px solid var(--bupt-gold); border-right: none;}
+            .timeline-item:nth-child(even) .timeline-content { border-left: 4px solid var(--bupt-gold); border-right: none; text-align: left; }
+            .timeline-dot { left: 0; margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="OIP.webp" alt="北邮校徽" class="header-logo-img">
+            <div class="logo-text">BUPT <span>北邮介绍-志愿活动作业</span></div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#history">校史沿革</a></li> <li><a href="#about">学科实力</a></li>
+                <li><a href="#career">就业霸主</a></li>
+                <li><a href="#facilities">硬件设施</a></li>
+                <li><a href="#location">校区优势</a></li>
+                <li><a href="#spirit">北邮精神</a></li> </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>信息黄埔 传邮万里</h1>
+        <p>从5G到6G，从人工智能到万物互联<br>北京邮电大学始终站在中国互联网浪潮的最前沿</p>
+        <a href="#career" class="cta-btn">查看就业报告</a>
+    </section>
+
+    <section id="history">
+        <div class="section-header">
+            <h2>辉煌校史 峥嵘岁月</h2>
+            <div class="divider"></div>
+            <p style="margin-top:15px">新中国第一所邮电高等学府，见证了中国通信事业从“摇把子”到“5G引领”的每一次跨越。</p>
+        </div>
+        
+        <div class="history-container">
+            <div class="history-intro">
+                <p>北京邮电大学（BUPT）创建于1955年，原名北京邮电学院，是新中国第一所邮电高等学府，隶属于原邮电部。六十余载风雨兼程，北邮始终与国家信息通信事业同呼吸、共命运，被誉为中国信息通信领域的“黄埔军校”。</p>
+            </div>
+            
+            <div class="timeline-wrapper">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">1955年</div>
+                        <p>北京邮电学院正式成立，以天津大学电讯系、电话电报通讯和无线电通信广播两个专业及重庆大学电机系电话电报通讯专业为基础组建。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">1960年</div>
+                        <p>建校仅5年，即被确定为全国64所重点大学之一，确立了在我国高等教育体系中的重要地位。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">1993年</div>
+                        <p>经国家教委批准，“北京邮电学院”更名为“北京邮电大学”，时任国家主席江泽民亲笔题写校名。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">21世纪</div>
+                        <p>先后入选国家“211工程”、“985优势学科创新平台”及“双一流”建设高校。在信息科技领域持续领跑，成为国家战略科技力量的重要组成部分。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="section-header">
+            <h2>硬核学科实力</h2>
+            <div class="divider"></div>
+            <p style="margin-top:15px">因为专业，所以不可替代。北邮的王牌学院是高薪就业的基石。</p>
+        </div>
+        <div class="major-grid">
+            <div class="major-card">
+                <h3>计算机学院 (SCS)</h3>
+                <p>被称为“北邮第一大系”，拥有国家级重点学科。代码能力强，算法底子厚，是百度、腾讯等大厂的主要人才库。</p>
+            </div>
+            <div class="major-card">
+                <h3>信息与通信工程学院 (SICE)</h3>
+                <p>全国排名第一（A+学科）。在通信运营商（移动/联通/电信）及华为、中兴等设备商中拥有绝对统治力。</p>
+            </div>
+            <div class="major-card">
+                <h3>人工智能学院 (SAI)</h3>
+                <p>面向未来的新兴学院，聚焦机器学习、脑认知等前沿领域，毕业生是AI时代的高薪预备役。</p>
+            </div>
+            <div class="major-card">
+                <h3>网络空间安全学院 (SCSS)</h3>
+                <p>响应国家网络安全战略，培养“白帽子”黑客与安全专家，在深信服、奇安信等安全名企极具竞争力。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="career">
+        <div class="section-header">
+            <h2>互联网就业霸主</h2>
+            <div class="divider"></div>
+            <p style="margin-top:15px">数据说话，北邮学子在就业市场上的核心竞争力。</p>
+        </div>
+
+        <div class="career-layout">
+            <div class="career-text">
+                <ul class="feature-list">
+                    <li>
+                        <h4>极高的校招认可度</h4>
+                        <p>互联网HR圈流传：“北邮简历免检”。北邮学生的工程实践能力极强，入职即能上手项目，深受技术面试官喜爱。</p>
+                    </li>
+                    <li>
+                        <h4>庞大的校友内推网络</h4>
+                        <p>在字节跳动、阿里、腾讯、美团等头部大厂，北邮校友密度极高。找学长学姐内推，往往比海投快人一步。</p>
+                    </li>
+                    <li>
+                        <h4>务实的校园文化</h4>
+                        <p>学校氛围踏实，学生普遍代码能力扎实，不玩虚的，是用人单位最喜欢的“实干派”。</p>
+                    </li>
+                </ul>
+                <div class="company-tags">
+                    <span class="tag">腾讯 Tencent</span>
+                    <span class="tag">阿里巴巴 Alibaba</span>
+                    <span class="tag">字节跳动 ByteDance</span>
+                    <span class="tag">华为 Huawei</span>
+                    <span class="tag">百度 Baidu</span>
+                    <span class="tag">美团 Meituan</span>
+                    <span class="tag">微软 Microsoft</span>
+                </div>
+            </div>
+
+            <div class="career-visuals">
+                <div class="chart-box">
+                    <h4 style="margin-bottom:25px; color:#333; text-align: center;">毕业生竞争力示意</h4>
+                    <div class="bar-group">
+                        <div class="bar-label"><span>平均起薪水平 (互联网行业)</span> <span>Top Tier</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 92%"></div></div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar-label"><span>升学深造率 (保研+考研+出国)</span> <span>~60%</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 60%"></div></div>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar-label"><span>世界500强及头部大厂去向比</span> <span>Very High</span></div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: 85%"></div></div>
+                    </div>
+                    <div style="margin-top:25px; font-size:0.85rem; color:#999; text-align: center;">
+                        *注：以上为示意数据，具体请参考学校官方年度就业质量报告
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="facilities">
+        <div class="section-header">
+            <h2>硬核硬件设施</h2>
+            <div class="divider"></div>
+            <p style="margin-top:15px">吃在北邮，住在北邮，学在北邮。完善的后勤保障助你潜心求学。</p>
+        </div>
+        <div class="facilities-grid">
+            
+            <div class="facility-card">
+                <img src="canteen.jpg" alt="北邮食堂" class="facility-img">
+                <div class="facility-info">
+                    <h3>吃在北邮</h3>
+                    <p>北邮食堂物美价廉，不仅有各地风味小吃，还有种类丰富的自助餐。作为“不减肥大学”，这里绝对能满足你的味蕾。</p>
+                </div>
+            </div>
+
+            <div class="facility-card">
+                 <img src="teaching.jpg" alt="北邮教学楼" class="facility-img">
+                <div class="facility-info">
+                    <h3>学在北邮</h3>
+                    <p>无论是标志性的教三楼，还是现代化的经管楼、科研楼，都配备了先进的多媒体设备。智慧教室让学习更高效。</p>
+                </div>
+            </div>
+
+            <div class="facility-card">
+                 <img src="library.jpg" alt="北邮图书馆" class="facility-img">
+                <div class="facility-info">
+                    <h3>知识海洋</h3>
+                    <p>北邮图书馆馆藏纸质图书百万余册，电子资源海量。安静的自习环境和浓郁的学术氛围，是沉淀自我的最佳场所。</p>
+                </div>
+            </div>
+
+            <div class="facility-card">
+                 <img src="dorm.jpg" alt="北邮宿舍" class="facility-img">
+                <div class="facility-info">
+                    <h3>住在北邮</h3>
+                    <p>宿舍区覆盖高速校园网（北邮人的生命线！），大部分安装有空调。楼内配有便利设施，打造温馨舒适的“第二个家”。</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="location">
+        <div class="section-header">
+            <h2>双校区与地理优势</h2>
+            <div class="divider"></div>
+            <p style="margin-top:15px">得天独厚的地理位置，是北邮学子实习就业的“加速器”。</p>
+        </div>
+        
+        <div class="campus-layout">
+            <div class="campus-box">
+                <h3>海淀校区 (本部)</h3>
+                <p>位于海淀区西土城路，地处北三环核心。周边高校云集，学术氛围浓厚。主要承担高年级本科生、研究生培养及科研任务。</p>
+            </div>
+            <div class="campus-box">
+                <h3>沙河校区</h3>
+                <p>位于昌平沙河高教园区，环境优美，设施崭新。主要承担大部分低年级本科生的通识教育和基础培养任务。</p>
+            </div>
+        </div>
+
+        <div class="location-advantage">
+            <h3>无可比拟的“地利”实习优势</h3>
+            <p>海淀校区南邻中关村，北接互联网大厂云集的西二旗（百度、腾讯、网易、快手等总部）。得益于极短的通勤距离，北邮学生在大三甚至大二就能轻松开启大厂日常实习，积累宝贵的实战经验，在秋招中抢占先机！</p>
+        </div>
+    </section>
+
+    <section id="alumni">
+        <div class="section-header">
+            <h2>强大的校友网络</h2>
+            <div class="divider"></div>
+            <p style="margin-top:15px">聚是一团火，散是满天星。全球北邮人是你坚实的后盾。</p>
+        </div>
+
+        <div class="alumni-layout">
+            <div class="alumni-text">
+                <ul class="feature-list">
+                    <li>
+                        <h4>北邮人论坛 (BYR BBS)</h4>
+                        <p>中国高校最活跃的BBS之一。这里有最全的求职面经、最真实的薪资爆料、最热心的学长学姐答疑。它是北邮人信息交流的精神家园。</p>
+                    </li>
+                    <li>
+                        <h4>薪火相传的内推文化</h4>
+                        <p>无论你走进哪家互联网大厂，几乎都能遇到北邮校友。热情的师兄师姐非常乐意为学弟学妹提供内推机会，这种互助文化是北邮最宝贵的财富。</p>
+                    </li>
+                    <li>
+                        <h4>行业影响力</h4>
+                        <p>从三大运营商高管到互联网新贵创始人，北邮校友遍布信息通信产业链的各个关键节点。</p>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="alumni-image-box">
+                 <img src="bbs.jpg" alt="北邮人论坛界面" class="bbs-screenshot">
+            </div>
+        </div>
+    </section>
+
+    <section id="spirit">
+        <div class="section-header">
+            <h2>精神图腾 薪火相传</h2>
+            <div class="divider" style="background-color: #c69c6d;"></div>
+            <p style="margin-top:15px; color: #ccc;">北邮不仅教授技术，更传承一种家国情怀与时代责任。</p>
+        </div>
+
+        <div class="spirit-grid">
+            <div class="spirit-card">
+                <div class="spirit-icon">📜</div>
+                <h3>核心校训</h3>
+                <div class="motto-highlight">厚德博学 敬业乐群</div>
+                <p>“厚德”为立身之本，“博学”为求知之道，“敬业”为成事之基，“乐群”为共进之源。八字校训激励着一代代北邮人修身治学，服务社会。</p>
+            </div>
+
+            <div class="spirit-card">
+                <div class="spirit-icon">🌏</div>
+                <h3>家国使命</h3>
+                <h3>传邮万里 国脉所系</h3>
+                <p>作为信息通信领域的排头兵，北邮人始终肩负着连接世界的使命。从传统的电报电话到现代的数字经济，北邮人始终守护着国家的“信息大动脉”。</p>
+            </div>
+
+            <div class="spirit-card">
+                <div class="spirit-icon">🕯️</div>
+                <h3>烛光精神</h3>
+                <h3>崇尚奉献 追求卓越</h3>
+                <p>北邮精神中蕴含着默默奉献的“烛光”特质。在科研攻关的深夜，在基站建设的边疆，北邮人以踏实肯干、勇于创新的作风，诠释着技术报国的理想。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="motto">厚德博学 敬业乐群</div>
+        <p>&copy; 2025 北邮志愿介绍作业 | 为信息黄埔打Call</p>
+        <p style="font-size: 0.8rem; margin-top: 10px; color: #555;">注：本页面为作业展示用途，相关数据和图片仅供参考。</p>
+    </footer>
+
+</body>
+</html>
